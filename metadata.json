@@ -1,0 +1,6 @@
+{
+  "name": "Dimensão Zero",
+  "description": "Jogo 3D completo de RPG de ação, exploração cósmica e narrativa épica: Dimensão Zero - O Último Elo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

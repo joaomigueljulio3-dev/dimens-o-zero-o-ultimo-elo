@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Dimensão Zero: O Último Elo</title>
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+  <!-- 3D Canvas -->
+  <div id="canvas-container"></div>
+
+  <!-- Gamepad Status Indicator -->
+  <div id="gamepad-indicator">🎮 CONTROLE CONECTADO</div>
+
+  <!-- HUD Layer -->
+  <div id="hud-layer">
+    <!-- Top Bar -->
+    <div class="hud-top">
+      <!-- Player Status Card -->
+      <div class="player-status-card">
+        <div class="player-header">
+          <span class="player-name">KAEL</span>
+          <span id="player-level-val" class="player-level">NV 1</span>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label">
+            <span>Vida</span>
+            <span id="player-hp-val">100/100</span>
+          </div>
+          <div class="stat-bar">
+            <div id="player-hp-bar" class="stat-bar-fill hp" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label">
+            <span>Energia</span>
+            <span id="player-energy-val">100/100</span>
+          </div>
+          <div class="stat-bar">
+            <div id="player-energy-bar" class="stat-bar-fill energy" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar">
+            <div id="player-xp-bar" class="stat-bar-fill xp" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quest Tracker Card -->
+      <div class="quest-tracker-card">
+        <div id="quest-tracker-title" class="quest-tracker-title">✨ MISSÃO PRINCIPAL</div>
+        <div id="quest-tracker-name" class="quest-tracker-name">O Despertar do Desconhecido</div>
+        <div id="quest-tracker-obj" class="quest-tracker-obj">Explore o templo subterrâneo de Aurora.</div>
+      </div>
+
+      <!-- Utility Buttons -->
+      <div class="hud-utility-buttons">
+        <button id="btn-inventory" class="icon-btn" title="Inventário e Habilidades (TAB)">🎒</button>
+        <button id="btn-journal" class="icon-btn" title="Diário de Missões (J)">📜</button>
+        <button id="btn-pause" class="icon-btn" title="Menu de Pausa (ESC)">⚙️</button>
+      </div>
+    </div>
+
+    <!-- Boss Health Bar -->
+    <div id="boss-bar-container">
+      <div id="boss-name-label" class="boss-name">CHEFÃO</div>
+      <div class="boss-hp-bar">
+        <div id="boss-hp-fill" class="boss-hp-fill"></div>
+      </div>
+    </div>
+
+    <!-- Crosshair & Target Reticle -->
+    <div id="crosshair"></div>
+    <div id="target-reticle"></div>
+
+    <!-- Floating Chapter / Alert Banner -->
+    <div id="banner-notification">
+      <div id="banner-sub" class="banner-subtitle">CAPÍTULO 1</div>
+      <div id="banner-main" class="banner-title">O DESPERTAR DO DESCONHECIDO</div>
+    </div>
+
+    <!-- Companion Speech Bubble -->
+    <div id="companion-bubble" style="display: none; position: absolute; top: 120px; left: 24px; max-width: 280px; background: rgba(10, 20, 36, 0.9); border: 1px solid #00e5ff; border-radius: 12px; padding: 10px 14px; box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); pointer-events: none; z-index: 40;">
+      <div style="font-size: 11px; font-weight: 800; color: #00e5ff; margin-bottom: 2px;">NEX // COMPANHEIRO</div>
+      <div id="companion-bubble-text" style="font-size: 12px; color: #e2e8f0; line-height: 1.3;"></div>
+    </div>
+
+    <!-- Contextual Interaction Prompt -->
+    <div id="interact-prompt">
+      <span class="key-badge">F</span>
+      <span id="interact-label">Interagir</span>
+    </div>
+
+    <!-- Mobile Virtual Controls -->
+    <div id="mobile-controls">
+      <!-- Joystick Touch Area -->
+      <div id="joystick-zone">
+        <div class="joystick-base"></div>
+        <div id="joystick-stick" class="joystick-stick"></div>
+      </div>
+
+      <!-- Camera Swipe Zone -->
+      <div id="camera-touch-zone"></div>
+
+      <!-- Action Button Cluster -->
+      <div id="action-cluster">
+        <div id="btn-attack" class="touch-btn attack-btn">
+          ⚔️
+          <span class="touch-label">ATK</span>
+        </div>
+        <div id="btn-jump" class="touch-btn jump-btn">
+          ⬆️
+          <span class="touch-label">PULO</span>
+        </div>
+        <div id="btn-dodge" class="touch-btn dodge-btn">
+          💨
+          <span class="touch-label">ESQUIVA</span>
+        </div>
+        <div id="btn-sprint" class="touch-btn sprint-btn">
+          ⚡
+          <span class="touch-label">CORRER</span>
+        </div>
+        <div id="btn-skill-1" class="touch-btn skill-1" title="Pulso Dimensional (Q)">
+          🌀
+          <span class="touch-label">PULSO</span>
+        </div>
+        <div id="btn-skill-2" class="touch-btn skill-2" title="Lâmina de Fótons (E)">
+          ✨
+          <span class="touch-label">FÓTON</span>
+        </div>
+        <div id="btn-skill-3" class="touch-btn skill-3" title="Fenda Temporal (R)">
+          ⏳
+          <span class="touch-label">FENDA</span>
+        </div>
+        <div id="btn-lock" class="touch-btn lock-btn" title="Travar Mira">
+          🎯
+          <span class="touch-label">MIRA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialogue Box Overlay -->
+  <div id="dialogue-container">
+    <div class="dialogue-speaker-wrap">
+      <div id="speaker-avatar" class="speaker-avatar">💬</div>
+      <div id="speaker-name" class="speaker-name">PERSONAGEM</div>
+    </div>
+    <div id="dialogue-text" class="dialogue-text">...</div>
+    <div id="dialogue-choices" class="dialogue-choices"></div>
+  </div>
+
+  <!-- RPG Modal (Inventory, Skills, Cores) -->
+  <div id="rpg-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">EVOLUÇÃO & INVENTÁRIO</div>
+        <button class="icon-btn modal-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-row">
+          <button class="tab-btn active" data-target="tab-inventory">🎒 Inventário</button>
+          <button class="tab-btn" data-target="tab-skills">⚡ Habilidades</button>
+          <button class="tab-btn" data-target="tab-cores">💎 Núcleos do Elo</button>
+        </div>
+        <div id="tab-inventory" class="tab-content" style="display: block;">
+          <div id="inventory-list"></div>
+        </div>
+        <div id="tab-skills" class="tab-content" style="display: none;">
+          <div id="skill-points-display" style="font-weight: 700; color: #ffd15c; margin-bottom: 12px;">Pontos Disponíveis: 0</div>
+          <div id="skill-tree-list"></div>
+        </div>
+        <div id="tab-cores" class="tab-content" style="display: none;">
+          <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px;">Reúna os 5 Núcleos Dimensionais para restaurar a estrutura cósmica do universo:</div>
+          <div id="cores-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Journal Modal (Quests & Lore) -->
+  <div id="journal-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">DIÁRIO DE MISSÕES</div>
+        <button class="icon-btn modal-close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-row">
+          <button class="tab-btn active" data-target="tab-main-quests">Campanha Principal</button>
+          <button class="tab-btn" data-target="tab-side-quests">Missões Secundárias</button>
+          <button class="tab-btn" data-target="tab-completed-quests">Histórico</button>
+        </div>
+        <div id="tab-main-quests" class="tab-content" style="display: block;">
+          <div id="journal-main-list"></div>
+        </div>
+        <div id="tab-side-quests" class="tab-content" style="display: none;">
+          <div id="journal-side-list"></div>
+        </div>
+        <div id="tab-completed-quests" class="tab-content" style="display: none;">
+          <div id="journal-completed-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause Modal -->
+  <div id="pause-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 380px; text-align: center;">
+      <div class="modal-header" style="justify-content: center;">
+        <div class="modal-title">JOGO PAUSADO</div>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button id="btn-resume" class="menu-btn primary">CONTINUAR</button>
+          <button class="menu-btn" onclick="window.saveSystem.save()">SALVAR PROGRESSO</button>
+          <button class="menu-btn" onclick="document.getElementById('settings-modal').style.display='flex'">CONFIGURAÇÕES</button>
+          <button class="menu-btn" onclick="location.reload()">MENU PRINCIPAL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">CONFIGURAÇÕES</div>
+        <button id="btn-close-settings" class="icon-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-row">
+          <span class="setting-label">Qualidade Gráfica:</span>
+          <div class="setting-ctrl">
+            <select id="quality-select" class="choice-btn" onchange="window.settingsManager.quality=this.value; window.settingsManager.applyToGame();">
+              <option value="low">Baixo (Fluidez Max)</option>
+              <option value="medium" selected>Médio (Balanceado)</option>
+              <option value="high">Alto (Detalhes e Sombras)</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Volume da Música (BGM):</span>
+          <input type="range" min="0" max="1" step="0.05" value="0.6" onchange="window.settingsManager.bgmVol=parseFloat(this.value); window.settingsManager.applyToGame();">
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Volume dos Efeitos (SFX):</span>
+          <input type="range" min="0" max="1" step="0.05" value="0.8" onchange="window.settingsManager.sfxVol=parseFloat(this.value); window.settingsManager.applyToGame();">
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Sensibilidade da Câmera:</span>
+          <input type="range" min="0.5" max="2.5" step="0.1" value="1.0" onchange="window.settingsManager.camSens=parseFloat(this.value); window.settingsManager.applyToGame();">
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Inverter Eixo Y:</span>
+          <input type="checkbox" onchange="window.settingsManager.invertY=this.checked; window.settingsManager.applyToGame();">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter 8 Endings Choice Modal -->
+  <div id="ending-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-title">O DESTINO DA REALIDADE</div>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 14px; margin-bottom: 16px; color: #cbd5e1; line-height: 1.5;">
+          Os 5 Núcleos Dimensionais repousam no Santuário das Origens. A consciência de Kael carrega a decisão final da Ruptura. Como você utilizará o Elo Primordial?
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button class="choice-btn" onclick="window.gameInstance.selectEnding(1)">
+            <strong style="color: #00e5ff;">1. Reconstrução:</strong> Reconectar todos os mundos e banir o Abismo, permitindo que a vida recomece em harmonia.
+          </button>
+          <button class="choice-btn" onclick="window.gameInstance.selectEnding(2)">
+            <strong style="color: #ffd15c;">2. Sacrifício dos Mundos:</strong> Selar o Abismo para sempre, isolando as dimensões para garantir segurança eterna.
+          </button>
+          <button class="choice-btn" onclick="window.gameInstance.selectEnding(3)">
+            <strong style="color: #10b981;">3. O Novo Universo:</strong> Fundar uma nova ordem sem guardiões supremos, resgatar Lyra e viver livre em Aurora.
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Title Screen -->
+  <div id="title-screen">
+    <div class="title-logo-wrap">
+      <img src="img/logo.jpg" alt="Logo" class="title-logo-img">
+      <div class="title-main">DIMENSÃO ZERO</div>
+      <div class="title-sub">O ÚLTIMO ELO</div>
+    </div>
+    <div class="menu-options">
+      <button id="btn-new-game" class="menu-btn primary">NOVO JOGO</button>
+      <button id="btn-continue" class="menu-btn">CONTINUAR</button>
+      <button id="btn-settings" class="menu-btn">CONFIGURAÇÕES</button>
+    </div>
+    <div style="margin-top: 30px; font-size: 11px; color: #64748b; letter-spacing: 1px;">
+      TECLADO / MOUSE • TOQUE NA TELA • GAMEPAD SUPORTADOS
+    </div>
+  </div>
+
+  <!-- Game Scripts in strict dependency order -->
+  <script src="libs/three.min.js"></script>
+  <script src="js/engine/audio.js"></script>
+  <script src="js/engine/input.js"></script>
+  <script src="js/engine/camera.js"></script>
+  <script src="js/engine/world.js"></script>
+  <script src="js/entities/player.js"></script>
+  <script src="js/entities/companion.js"></script>
+  <script src="js/entities/enemies.js"></script>
+  <script src="js/entities/bosses.js"></script>
+  <script src="js/entities/props.js"></script>
+  <script src="js/systems/combat.js"></script>
+  <script src="js/systems/rpg.js"></script>
+  <script src="js/systems/quest.js"></script>
+  <script src="js/systems/dialogue.js"></script>
+  <script src="js/systems/save.js"></script>
+  <script src="js/systems/settings.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
